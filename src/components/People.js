@@ -11,30 +11,34 @@ import PeopleCard from './PeopleCard';
 
 export function People() {
   const navigate = useNavigate();
+  // Pagination
   let [next, setNext] = useState('');
+  let [previous, setPrevious] = useState(Number(next) - 1);
+  let [pageCount, setPageCount] = useState(Number(next) + 2);
+
   const [isSearch, setIsSearch] = useState('');
   const [searchValue, setSeachValue] = useState('');
-  const [isError, setIsError] = useState('');
 
   const [value, setValue] = useState('');
   const dispatch = useDispatch();
 
-  let { loading, error, data } = AllPeople();
+  let { loading, error, data } = AllPeople(next);
   let { loading: searchLoading, error: searchError, data: searchData } = PeopleByName(searchValue);
 
   useEffect(() => {
     console.log(data);
-    if (!data)
-      return (
-        <Box sx={{ width: '100%' }}>
-          <LinearProgress />
-        </Box>
-      );
-    if (searchError) {
-      setIsError('true');
-      return <Alert severity="error">There was a problem loading data, please refresh</Alert>;
-    }
   }, [data]);
+
+  const handlePagination = (value) => {
+    console.log(typeof value.toString());
+    if (value.toString() === 'NaN') {
+      setNext('');
+    } else {
+      setNext(value.toString());
+    }
+
+    console.log(typeof next, next);
+  };
 
   if (loading)
     return (
@@ -43,7 +47,7 @@ export function People() {
       </Box>
     );
   if (error) {
-    return <Alert severity="error">There was a problem loading data, please refresh</Alert>;
+    return <Alert severity="error">{JSON.stringify(error)}</Alert>;
   }
 
   const doPageNext = (next) => {
@@ -114,7 +118,8 @@ export function People() {
           </Box>
           <Box>
             <Container maxWidth="sm">
-              <Pagination sx={{ ml: 15, fontSize: 24 }} count={5} />
+              {pageCount}
+              <Pagination sx={{ ml: 15, fontSize: 24 }} count={pageCount} onChange={handlePagination} />
             </Container>
           </Box>
         </Container>
