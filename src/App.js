@@ -1,7 +1,9 @@
 import './App.css';
-import People from './components/People';
-import { BrowserRouter as Router, Route, Routes, Link as RouterLink } from 'react-router-dom';
+
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+
 import Details from './components/Details';
+import People from './components/People';
 
 function App() {
   return (

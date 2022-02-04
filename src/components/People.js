@@ -1,16 +1,11 @@
 import './People.css';
-
-import { Alert, Backdrop, Box, Button, ButtonGroup, Container, Grid, LinearProgress, Pagination, TextField, CircularProgress } from '@mui/material';
+import { Alert, Backdrop, Box, Button, ButtonGroup, CircularProgress, Container, Grid, Pagination, TextField, LinearProgress, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-
 import { AllPeople } from '../data/getPeople';
 import { PeopleByName } from './../data/getPeopleByName';
 import PeopleCard from './PeopleCard';
 
 export function People() {
-  const navigate = useNavigate();
   // Pagination
   let [next, setNext] = useState(Number(1));
 
@@ -22,7 +17,7 @@ export function People() {
   const [value, setValue] = useState('');
 
   let { loading, error, data } = AllPeople(parseInt(next));
-  let { loading: searchLoading, error: searchError, data: searchData } = PeopleByName(value);
+  let { data: searchData, loading: searchLoader } = PeopleByName(value);
 
   useEffect(() => {
     // We want to make sure we have a page
@@ -70,18 +65,18 @@ export function People() {
   };
 
   return (
-    <div className="container">
+    <Box sx={{ mt: 4 }}>
       <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading} onClick={() => {}}>
         <CircularProgress color="inherit" />
       </Backdrop>
       <Box sx={{ mt: 0, p: 0 }}>
         <Container maxWidth="md">
           <Grid container spacing={1}>
-            <Grid item md={7}>
+            <Grid item md={9}>
               <TextField sx={{ mr: 0, mb: 4 }} fullWidth={true} value={searchValue} onChange={(e) => setSeachValue(e.target.value)} label="Search" variant="filled" />
             </Grid>
             <Grid item md={3}>
-              <ButtonGroup variant="contained" size="large">
+              <ButtonGroup variant="contained" size="large" sx={{ mt: 1 }}>
                 <Button disabled={!searchValue} onClick={doSearch} variant="contained" color="primary">
                   Search
                 </Button>
@@ -105,13 +100,20 @@ export function People() {
               <Pagination sx={{ ml: 15, fontSize: 30, visibility: loading || searchValue || isSearch ? 'hidden' : 'visible' }} count={pageCount > pageSize ? pageCount : pageSize} color="secondary" onChange={handlePagination} />
             </Container>
 
-            {/* <Box sx={{ visibility: searchValue ? 'hidden' : 'visible' }} sx={{ width: '100%' }}>
-              <LinearProgress />
-            </Box> */}
+            <Container maxWidth="md">
+              {searchLoader && searchValue && <LinearProgress size={24} />}
+              {!searchLoader && isSearch && searchData.getPeopleByName.length == 0 && (
+                <Alert severity="warning">
+                  <Typography variant="p">
+                    No results found for <b>{value}</b>
+                  </Typography>
+                </Alert>
+              )}
+            </Container>
           </Box>
         </Container>
       </Box>
-    </div>
+    </Box>
   );
 }
 

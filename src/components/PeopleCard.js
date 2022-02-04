@@ -1,6 +1,5 @@
 import { AccountCircleOutlined } from '@mui/icons-material';
-import { Button, Card, CardActions, CardContent, Grid, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { Button, Card, CardActions, CardContent, Typography } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { Link as RouterLink } from 'react-router-dom';
 
@@ -10,7 +9,7 @@ function PeopleCard(props) {
   const dispatch = useDispatch();
 
   return (
-    <Card sx={{ backgroundColor: '#F9F7F7' }}>
+    <Card>
       <CardContent variant="outlined">
         <AccountCircleOutlined sx={{ fontSize: 55 }} />
         <Typography sx={{ fontSize: 25 }} variant="h5" color="text.primary" gutterBottom>
