@@ -71,7 +71,7 @@ export function People() {
 
   return (
     <div className="container">
-      <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading && searchLoading} onClick={() => {}}>
+      <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading} onClick={() => {}}>
         <CircularProgress color="inherit" />
       </Backdrop>
       <Box sx={{ mt: 0, p: 0 }}>
@@ -102,8 +102,12 @@ export function People() {
           </Box>
           <Box>
             <Container maxWidth="sm">
-              <Pagination sx={{ ml: 15, fontSize: 30, visibility: loading || searchValue ? 'hidden' : 'visible' }} count={pageCount > pageSize ? pageCount : pageSize} color="secondary" onChange={handlePagination} />
+              <Pagination sx={{ ml: 15, fontSize: 30, visibility: loading || searchValue || isSearch ? 'hidden' : 'visible' }} count={pageCount > pageSize ? pageCount : pageSize} color="secondary" onChange={handlePagination} />
             </Container>
+
+            {/* <Box sx={{ visibility: searchValue ? 'hidden' : 'visible' }} sx={{ width: '100%' }}>
+              <LinearProgress />
+            </Box> */}
           </Box>
         </Container>
       </Box>
