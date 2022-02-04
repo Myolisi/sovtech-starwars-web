@@ -4,9 +4,9 @@ const peopleByNameQue = gql`
   query GetbyName($name: String!) {
     getPeopleByName(name: $name) {
       name
-      gender
       height
       mass
+      gender
       homeworld
       next
     }

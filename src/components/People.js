@@ -1,6 +1,6 @@
 import './People.css';
 
-import { Alert, Box, Button, ButtonGroup, Container, Grid, LinearProgress, Pagination, TextField } from '@mui/material';
+import { Alert, Backdrop, Box, Button, ButtonGroup, Container, Grid, LinearProgress, Pagination, TextField, CircularProgress } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -12,52 +12,36 @@ import PeopleCard from './PeopleCard';
 export function People() {
   const navigate = useNavigate();
   // Pagination
-  let [next, setNext] = useState('');
-  let [previous, setPrevious] = useState(Number(next) - 1);
-  let [pageCount, setPageCount] = useState(Number(next) + 2);
+  let [next, setNext] = useState(Number(1));
+
+  let [pageCount, setPageCount] = useState(next);
+  let [pageSize, setPageSize] = useState(next);
 
   const [isSearch, setIsSearch] = useState('');
   const [searchValue, setSeachValue] = useState('');
-
   const [value, setValue] = useState('');
-  const dispatch = useDispatch();
 
-  let { loading, error, data } = AllPeople(next);
-  let { loading: searchLoading, error: searchError, data: searchData } = PeopleByName(searchValue);
+  let { loading, error, data } = AllPeople(parseInt(next));
+  let { loading: searchLoading, error: searchError, data: searchData } = PeopleByName(value);
 
   useEffect(() => {
-    console.log(data);
-  }, [data]);
-
-  const handlePagination = (value) => {
-    console.log(typeof value.toString());
-    if (value.toString() === 'NaN') {
-      setNext('');
-    } else {
-      setNext(value.toString());
+    // We want to make sure we have a page
+    if (data && data.people[data.people.length - 1].next !== 0) {
+      setPageCount(++next);
     }
+    if (data && pageCount >= pageSize && data.people[data.people.length - 1].next !== 0) {
+      setPageSize(pageCount);
+    }
+  }, [data]); // eslint-disable-line react-hooks/exhaustive-deps
+  // Remove warning on state
 
-    console.log(typeof next, next);
+  const handlePagination = (event, value) => {
+    setNext(value);
   };
 
-  if (loading)
-    return (
-      <Box sx={{ width: '100%' }}>
-        <LinearProgress />
-      </Box>
-    );
   if (error) {
     return <Alert severity="error">{JSON.stringify(error)}</Alert>;
   }
-
-  const doPageNext = (next) => {
-    console.log(data.people[0].next);
-    setNext(next);
-  };
-
-  const doPagePrev = (next) => {
-    setNext(next);
-  };
 
   const doSearch = () => {
     setValue(searchValue);
@@ -69,17 +53,14 @@ export function People() {
     setIsSearch(false);
   };
 
-  // TODO: mode card to saperate component
   const people = () => {
     if (!isSearch && data) {
-      console.log('not searching bra');
       return data.people.map((person, index) => (
         <Grid item xs={6} key={index}>
           <PeopleCard person={person} />
         </Grid>
       ));
     } else if (isSearch && searchData) {
-      console.log('searching ..', searchData);
       return searchData.getPeopleByName.map((person, index) => (
         <Grid item xs={12} key={index}>
           <PeopleCard person={person} />
@@ -90,6 +71,9 @@ export function People() {
 
   return (
     <div className="container">
+      <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading && searchLoading} onClick={() => {}}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <Box sx={{ mt: 0, p: 0 }}>
         <Container maxWidth="md">
           <Grid container spacing={1}>
@@ -118,8 +102,7 @@ export function People() {
           </Box>
           <Box>
             <Container maxWidth="sm">
-              {pageCount}
-              <Pagination sx={{ ml: 15, fontSize: 24 }} count={pageCount} onChange={handlePagination} />
+              <Pagination sx={{ ml: 15, fontSize: 30, visibility: loading || searchValue ? 'hidden' : 'visible' }} count={pageCount > pageSize ? pageCount : pageSize} color="secondary" onChange={handlePagination} />
             </Container>
           </Box>
         </Container>

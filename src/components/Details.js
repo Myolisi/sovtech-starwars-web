@@ -1,8 +1,6 @@
-import { Button, Grid, Card, CardContent, Typography, CardActions, Container, Box } from '@mui/material';
-import { useParams } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import { dispatchPerson } from '../store/personDetails';
 import { Person } from '@mui/icons-material';
+import { Box, Card, CardContent, Container, Grid, Typography } from '@mui/material';
+import { useSelector } from 'react-redux';
 
 function Details(props) {
   const person = useSelector((state) => state.person.value);

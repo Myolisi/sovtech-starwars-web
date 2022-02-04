@@ -1,13 +1,13 @@
 import { gql, useQuery } from '@apollo/client';
 
 const peopleQue = gql`
-  query people($next: String!) {
+  query people($next: Int!) {
     people(next: $next) {
       name
-      gender
-      height
       mass
+      height
       homeworld
+      gender
       next
     }
   }
