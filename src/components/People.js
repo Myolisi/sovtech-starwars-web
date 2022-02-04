@@ -102,7 +102,7 @@ export function People() {
 
             <Container maxWidth="md">
               {searchLoader && searchValue && <LinearProgress size={24} />}
-              {!searchLoader && isSearch && searchData.getPeopleByName.length == 0 && (
+              {!searchLoader && isSearch && searchData.getPeopleByName.length === 0 && (
                 <Alert severity="warning">
                   <Typography variant="p">
                     No results found for <b>{value}</b>
